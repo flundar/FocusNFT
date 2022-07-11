@@ -1,0 +1,19 @@
+{
+  "name": "nervestakesite",
+  "version": "1.0.0",
+  "description": "nft staking for nervenft product",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "nft",
+    "stake"
+  ],
+  "author": "flundar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "open": "^8.4.0"
+  }
+}

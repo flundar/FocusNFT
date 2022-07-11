@@ -1,0 +1,15 @@
+{
+  "name": "nerverafflesite",
+  "version": "1.0.0",
+  "description": "raffle site for nervenft product",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "nft",
+    "raffle"
+  ],
+  "author": "flundar",
+  "license": "ISC"
+}
