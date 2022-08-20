@@ -27,13 +27,13 @@ exports.run = (client, message, args) => {
       message.channel.send("channel id added to onlyimage system")
     }
   } else if (parameter == "resetimage") {
+    let onlyimagechannels = client.settings["onlyimage"]
     let number = args[1]
     if (number) {
       number = number - 1
-      delete client.settings["onlyimage"][number]
+      delete onlyimagechannels[number]
       message.channel.send("channel deleted from onlyimage")
     } else {
-      let onlyimagechannels = client.settings["onlyimage"]
       let sendingmessage = ``
       for (let i = 0; i < onlyimagechannels.length; i++) {
         if(!onlyimagechannels[i]) continue
