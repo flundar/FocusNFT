@@ -225,33 +225,33 @@ client.load = command => {
 
 //PM
 
-client.on("messageCreate", message => {
-  if (message.author.bot) return;
-  if (message.channel.type === 'DM') {
-    try {
-      const oda = client.channels.cache.get("1002876955730919474");
-      const embed1 = new MessageEmbed()
-        .setThumbnail(message.author.AvatarURL)
-        .setAuthor({
-          name: 'PM MESAJI',
-          iconURL: message.author.AvatarURL
-        })
-        .addField('Kullanıcı Adı', message.author.username)
-        .addField('Kullanıcı ID', message.author.id)
-        .addField('Kullanıcı(Etiketlenmiş)', `<@${message.author.id}>`)
-        .addField('Mesaj İçeriği', message.content)
-        .setTimestamp()
-        .setFooter({
-          text: 'Stajyer'
-        })
-      return oda.send({
-        embeds: [embed1]
-      });
-    } catch (e) {
-      console.log("HATA YAKALANDI: " + e)
-    }
-  }
-});
+// client.on("messageCreate", message => {
+//   if (message.author.bot) return;
+//   if (message.channel.type === 'DM') {
+//     try {
+//       const oda = client.channels.cache.get("1002876955730919474");
+//       const embed1 = new MessageEmbed()
+//         .setThumbnail(message.author.AvatarURL)
+//         .setAuthor({
+//           name: 'PM MESAJI',
+//           iconURL: message.author.AvatarURL
+//         })
+//         .addField('Kullanıcı Adı', message.author.username)
+//         .addField('Kullanıcı ID', message.author.id)
+//         .addField('Kullanıcı(Etiketlenmiş)', `<@${message.author.id}>`)
+//         .addField('Mesaj İçeriği', message.content)
+//         .setTimestamp()
+//         .setFooter({
+//           text: 'Stajyer'
+//         })
+//       return oda.send({
+//         embeds: [embed1]
+//       });
+//     } catch (e) {
+//       console.log("HATA YAKALANDI: " + e)
+//     }
+//   }
+// });
 
 
 
@@ -331,6 +331,24 @@ client.on('messageCreate', message => {
   } else if (message.member.permissions.has("BAN_MEMBERS")) {
     return;
   }
+
+  let dataonlyimage = client.settings["onlyimage"]
+  
+  for (let i = 0; i < dataonlyimage.length; i++) {
+    if (!dataonlyimage[i]) continue
+
+    if (message.channel.id == dataonlyimage[i]) {
+      if (/^(http|https):\/\/.*\.(png|jpg|jpeg)$/i.test(message.content)) {
+        message.react('484656592541974538');
+        message.react('484656592541712384');
+      } else {
+        message.delete().catch(error => {
+          console.log(`Şu kullanıcının mesajı silinemedi: ${message.author.username} hata: ${error}`)
+        })
+      }
+    }
+  }
+
 });
 
 function EpochToDate(epoch) {
