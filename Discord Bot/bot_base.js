@@ -40,7 +40,6 @@ require('./util/eventLoader')(client);
 const {
   ifError
 } = require('assert');
-client.muted = require("./muted.json");
 client.settings = require('./settings.json');
 // REQUIRE
 
@@ -113,88 +112,7 @@ setInterval(() => {
 
 }, 25000)
 
-async function mutekontrol() {
 
-  for (let i in client.muted) {
-    try {
-      let time = client.muted[i].time;
-      let guildId = client.muted[i].guild;
-      let guild = client.guilds.cache.get(guildId);
-      let member = await guild.members.fetch(client.muted[i].userid);
-
-      let mutedRole = guild.roles.cache.find(r => r.id === "435831461287952394");
-      if (!mutedRole) continue;
-
-
-      if (Date.now() > time) {
-
-        member.roles.remove(mutedRole);
-        console.log("Mute revoked:  " + member.user.tag);
-        client.muted[i] = {
-          mute: false,
-          userid: client.muted[i].userid,
-          reason: client.muted[i].reason,
-          unmuted: "Stajyer",
-          mutetime: client.muted[i].time,
-          unmutetime: Date.now()
-        }
-
-        fs.writeFile("./muted.json", JSON.stringify(client.muted, null, 4), err => {
-          if (err) throw err;
-        });
-      } else {
-        try {
-          if (member.roles.cache.has(mutedRole.id)) {
-            console.log("Member already has the role " + member.user.tag)
-          } else {
-            member.roles.add(mutedRole);
-            console.log("Quit when muted:  " + member.user.tag);
-            member.send('Bi akıllı sensin coni al sana bi CEZALI vereyim.')
-          }
-        } catch (e) {
-          console.log("Cannot give role to member: " + e)
-        }
-      }
-
-
-    } catch (e) {
-
-    }
-  }
-}
-
-
-
-
-
-async function sunucudancikmutekontrol() {
-  console.log("New member arrived. Controlling for mute.")
-  try {
-    for (let i in client.muted) {
-      let time = client.muted[i].time;
-      let guildId = client.muted[i].guild;
-      let guild = client.guilds.cache.get(guildId);
-      let member = await guild.members.get(client.muted[i].userid);
-      let mutevar = client.muted[i].guild;
-
-      let mutedRole = guild.roles.cache.find(r => r.id === "435831461287952394");
-      if (!mutedRole) continue;
-      if (Date.now() < time) {
-        if (member.roles.cache.has(mutedRole.id)) {
-          return;
-        }
-        console.log(member)
-        member.roles.add(mutedRole);
-        console.log("Quit when muted:  " + member.user.tag);
-        member.send('Bi akıllı sensin coni al sana bi muted.').catch(error => {
-          console.log(error)
-        })
-      }
-    }
-  } catch (error) {
-    console.log(ifError)
-  }
-}
 
 
 
