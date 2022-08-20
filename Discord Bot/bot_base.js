@@ -73,10 +73,10 @@ client.on("ready", () => {
 client.on('interactionCreate', async interaction => {
   if (interaction.isButton()) {
     try {
-      let guild = client.guilds.cache.get(client.settings.verify);
+      let guild = interaction.guild
       let verifrole = guild.roles.cache.find(r => r.id === client.settings.verifyrole);
       if (interaction.customId == "verify_button") {
-        if (!message.member.roles.cache.find(r => r.id === verifrole)) {
+        if (interaction.member.roles.cache.find(r => r.id === client.settings.verifyrole)) {
           interaction.member.roles.remove(verifrole);
           interaction.reply({
             content: "Removed!",
@@ -333,7 +333,7 @@ client.on('messageCreate', message => {
   }
 
   let dataonlyimage = client.settings["onlyimage"]
-  
+
   for (let i = 0; i < dataonlyimage.length; i++) {
     if (!dataonlyimage[i]) continue
 
