@@ -60,24 +60,6 @@ client.on('rateLimit', (info) => {
 
 
 client.on("ready", () => {
-  // let verify = client.channels.cache.get('1009436598900883527')
-  // const embedopen = new Discord.MessageEmbed()
-  //   .setDescription(`Click the button below to verify yourself! ⬇`)
-  //   .setTitle(`FOCUS Verification`)
-  //   .setColor(0x00FFFF)
-  //   .setTimestamp()
-  // const row = new Discord.MessageActionRow()
-  //   .addComponents(
-  //     new Discord.MessageButton()
-  //     .setLabel("Verify")
-  //     .setCustomId("verify_button")
-  //     .setEmoji('✔')
-  //     .setStyle("SUCCESS")
-  //   )
-  // verify.send({
-  //   embeds: [embedopen],
-  //   components: [row]
-  // })
   setInterval(() => {
     client.user.setActivity(client.settings.status, {
       type: "STREAMING",
@@ -89,29 +71,36 @@ client.on("ready", () => {
 
 
 client.on('interactionCreate', async interaction => {
-  if(interaction.isButton()) {
-      try {
-        let guild = client.guilds.cache.get("1009072912143241217");
-        let verifrole = guild.roles.cache.find(r => r.id === "1009434525413146666");
-          if(interaction.customId == "verify_button"){
-            interaction.member.roles.add(verifrole);
-            interaction.reply({content:"Confirmed!" , ephemeral: true })
-          }
-      } catch (error) {
-          console.error(error);
-          await interaction.reply({ content: 'There was an error while executing the button script !', ephemeral: true});
+  if (interaction.isButton()) {
+    try {
+      let guild = client.guilds.cache.get(client.settings.verify);
+      let verifrole = guild.roles.cache.find(r => r.id === client.settings.verifyrole);
+      if (interaction.customId == "verify_button") {
+        if (!message.member.roles.cache.find(r => r.id === verifrole)) {
+          interaction.member.roles.remove(verifrole);
+          interaction.reply({
+            content: "Removed!",
+            ephemeral: true
+          })
+        } else {
+          interaction.member.roles.add(verifrole);
+          interaction.reply({
+            content: "Confirmed!",
+            ephemeral: true
+          })
+        }
       }
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({
+        content: 'There was an error while executing the button script !',
+        ephemeral: true
+      });
+    }
   } else {
-      return;
+    return;
   }
 })
-
-setInterval(() => {
-
-  mutekontrol();
-
-}, 25000)
-
 
 
 
@@ -120,7 +109,7 @@ setInterval(() => {
 
 
 client.on('guildMemberAdd', async (member) => {
-  sunucudancikmutekontrol(member)
+
   let kanal = client.channels.cache.get('818282332993617990');
   if (!kanal) return;
 
