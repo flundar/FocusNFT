@@ -76,7 +76,7 @@ client.on('interactionCreate', async interaction => {
       let guild = interaction.guild
       let verifrole = guild.roles.cache.find(r => r.id === client.settings.verifyrole);
       if (interaction.customId == "verify_button") {
-        if (interaction.member.roles.cache.find(r => r.id === client.settings.verifyrole)) {
+        if (interaction.member.roles.cache.find(r => r.id === verifrole.id)) {
           interaction.member.roles.remove(verifrole);
           interaction.reply({
             content: "Removed!",
