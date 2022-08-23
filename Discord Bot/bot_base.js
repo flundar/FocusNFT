@@ -40,12 +40,20 @@ require('./util/eventLoader')(client);
 const {
   ifError
 } = require('assert');
+const { json } = require('body-parser');
 client.settings = require('./settings.json');
+client.level = require('./level.json');
 // REQUIRE
 
 
 
-
+setInterval(() => {
+  fs.copyFile(
+    'level.json',
+    'backuplevel.json',
+    (err) => console.error
+  );
+}, 10000);
 
 
 
@@ -328,10 +336,7 @@ client.on('messageCreate', message => {
   } else if (message.channel.type === 'DM') {
     return;
 
-  } else if (message.member.permissions.has("BAN_MEMBERS")) {
-    return;
   }
-
   let dataonlyimage = client.settings["onlyimage"]
 
   for (let i = 0; i < dataonlyimage.length; i++) {
@@ -348,6 +353,43 @@ client.on('messageCreate', message => {
       }
     }
   }
+  var levelControl = client.level.hasOwnProperty(message.author.id)
+  var count
+  var level 
+  if (levelControl){
+    count = client.level[message.author.id].count
+    level = client.level[message.author.id].level
+  } else {
+    count = 1
+    level = 0
+  }
+
+  client.level[message.author.id] = {
+    userid: message.author.id,
+    guild: message.guild.id,
+    count: count + 1,
+    level: level,
+  }
+  var levelSystem = client.settings["levels"]
+  
+  if(level == levelSystem[level].level){
+    console.log(level,count)
+    if(count >= levelSystem[level].count){
+      message.channel.send(`<@${message.author.id}> cheers! u got a level: ${level + 1}`)
+      client.level[message.author.id] = {
+        userid: message.author.id,
+        guild: message.guild.id,
+        count: 0,
+        level: level + 1,
+      }
+    }
+  }
+
+  fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
+    if (err) throw err;
+  });
+
+
 
 });
 

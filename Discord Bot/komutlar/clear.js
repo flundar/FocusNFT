@@ -4,6 +4,7 @@ const { QuickDB } = require('quick.db-9.0.0');
 const data = new QuickDB();
 
 exports.run = async (client, message, args) => {
+if (!message.member.roles.cache.find(r => r.id === "1009074068768690207")) return message.channel.send("u don't have a permission for that.");
 if(isNaN(args[0])) return message.channel.send('Converting to "int" failed for parameter "search".');
 if(args[0] > 100) {
 if(args[0].split('')[1] === '0' && args[0].split('')[2] === '0') {

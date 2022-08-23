@@ -6,5 +6,131 @@
     "status": "Focus on the future",
     "guides": "1009072912143241217",
     "verifyrole": "1009434525413146666",
-    "onlyimage": []
+    "onlyimage": [],
+    "levels": {
+        "0": {
+            "count": 0,
+            "level": 0
+        },
+        "1": {
+            "count": 10,
+            "level": 1
+        },
+        "2": {
+            "count": 50,
+            "level": 2
+        },
+        "3": {
+            "count": 200,
+            "level": 3
+        },
+        "4": {
+            "count": 350,
+            "level": 4
+        },
+        "5": {
+            "count": 450,
+            "level": 5
+        },
+        "6": {
+            "count": 550,
+            "level": 6
+        },
+        "7": {
+            "count": 650,
+            "level": 7
+        },
+        "8": {
+            "count": 750,
+            "level": 8
+        },
+        "9": {
+            "count": 850,
+            "level": 9
+        },
+        "10": {
+            "count": 50,
+            "level": 10
+        },
+        "11": {
+            "count": 1000,
+            "level": 11
+        },
+        "12": {
+            "count": 1100,
+            "level": 12
+        },
+        "13": {
+            "count": 1200,
+            "level": 13
+        },
+        "14": {
+            "count": 1300,
+            "level": 14
+        },
+        "15": {
+            "count": 1400,
+            "level": 15
+        },
+        "16": {
+            "count": 1500,
+            "level": 16
+        },
+        "17": {
+            "count": 1600,
+            "level": 17
+        },
+        "18": {
+            "count": 1700,
+            "level": 18
+        },
+        "19": {
+            "count": 1800,
+            "level": 19
+        },
+        "20": {
+            "count": 2000,
+            "level": 20
+        },
+        "21": {
+            "count": 3000,
+            "level": 21
+        },
+        "22": {
+            "count": 4000,
+            "level": 22
+        },
+        "23": {
+            "count": 5000,
+            "level": 23
+        },
+        "24": {
+            "count": 6000,
+            "level": 24
+        },
+        "25": {
+            "count": 7000,
+            "level": 25
+        },
+        "26": {
+            "count": 8000,
+            "level": 26
+        },
+        "27": {
+            "count": 9000,
+            "level": 27
+        },
+        "28": {
+            "count": 10000,
+            "level": 28
+        },
+        "29": {
+            "count": 100000,
+            "level": 29
+        },
+        "30": {
+            "count": 1000000,
+            "level": 30
+        }
+    }
 }
