@@ -40,7 +40,9 @@ require('./util/eventLoader')(client);
 const {
   ifError
 } = require('assert');
-const { json } = require('body-parser');
+const {
+  json
+} = require('body-parser');
 client.settings = require('./settings.json');
 client.level = require('./level.json');
 // REQUIRE
@@ -353,43 +355,46 @@ client.on('messageCreate', message => {
       }
     }
   }
+
+
   var levelControl = client.level.hasOwnProperty(message.author.id)
   var count
-  var level 
-  if (levelControl){
+  var level
+  if (levelControl) {
     count = client.level[message.author.id].count
     level = client.level[message.author.id].level
+    client.level[message.author.id].count = count + 1
+    fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
+      if (err) throw err;
+    });
+
   } else {
-    count = 1
+    count = 0
     level = 0
+    client.level[message.author.id] = {
+      userid: message.author.id,
+      guild: message.guild.id,
+      count: count + 1,
+      level: level,
+    }
+    fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
+      if (err) throw err;
+    });
   }
 
-  client.level[message.author.id] = {
-    userid: message.author.id,
-    guild: message.guild.id,
-    count: count + 1,
-    level: level,
-  }
-  var levelSystem = client.settings["levels"]
-  
-  if(level == levelSystem[level].level){
-    console.log(level,count)
-    if(count >= levelSystem[level].count){
+
+  var levelCount = client.settings["levels"]
+  if (level == levelCount[level].level) {
+    console.log(message.author.username, level, count)
+    if (count >= levelCount[level].count) {
       message.channel.send(`<@${message.author.id}> cheers! u got a level: ${level + 1}`)
-      client.level[message.author.id] = {
-        userid: message.author.id,
-        guild: message.guild.id,
-        count: 0,
-        level: level + 1,
-      }
+      client.level[message.author.id].level = level + 1
+      client.level[message.author.id].count = 0
+      fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
+        if (err) throw err;
+      });
     }
   }
-
-  fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
-    if (err) throw err;
-  });
-
-
 
 });
 
