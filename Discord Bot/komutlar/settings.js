@@ -7,6 +7,7 @@ const {
 	MessageEmbed
 } = Discord;
 exports.run = (client, message, args) => {
+  if (!message.member.roles.cache.find(r => r.id === "1009074068768690207")) return message.channel.send("u don't have a permission for that.");
   let parameter = args[0] //args.slice(0).join(' ');
 
   if (parameter == "welcome") {
