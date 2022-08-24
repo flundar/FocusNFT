@@ -76,7 +76,6 @@ client.on("ready", () => {
       url: "https://www.twitch.tv/flundarr"
     });
   }, 2000);
-
 });
 
 
@@ -85,15 +84,18 @@ client.on('interactionCreate', async interaction => {
     try {
       let guild = interaction.guild
       let verifrole = guild.roles.cache.find(r => r.id === client.settings.verifyrole);
+      let canverif = message.guild.roles.cache.find(r => r.id === client.settings.canverifyrole);
       if (interaction.customId == "verify_button") {
         if (interaction.member.roles.cache.find(r => r.id === verifrole.id)) {
           interaction.member.roles.remove(verifrole);
+          interaction.member.roles.add(canverif);
           interaction.reply({
             content: "Removed!",
             ephemeral: true
           })
         } else {
           interaction.member.roles.add(verifrole);
+          interaction.member.roles.remove(canverif);
           interaction.reply({
             content: "Confirmed!",
             ephemeral: true
@@ -113,34 +115,69 @@ client.on('interactionCreate', async interaction => {
 })
 
 
-
-
 // FLUNDAR DURUM
 
 
 client.on('guildMemberAdd', async (member) => {
 
-  let kanal = client.channels.cache.get('818282332993617990');
+
+  let sozcukler = ["apple", "red", "car", "raccoon", "headphone", "computer", "cooler", "sun", "moon", "light", "jupiter", "phone", "nft", "goat", "monitor", "orange", "blue", "green", "darkblue"]
+  var takenSozcuk = sozcukler[Math.floor(Math.random() * sozcukler.length)];
+  let normalChatMessage = [`You need to write "${takenSozcuk}" to unlock verify.`, `Write "${takenSozcuk}" to gain verify access.`, `"${takenSozcuk}" Write the first sentence for take access to verify.`]
+  var anormalChatMessage = normalChatMessage[Math.floor(Math.random() * normalChatMessage.length)];
+  let kanal = client.channels.cache.get(client.settings.welcomechannel);
+  let preverif = client.channels.cache.get("1011995304280731719")
+  if (!preverif) return;
+  const filter = m => m.author.id === member.user.id
+  var godtierDelete
+  preverif.send(`<@${member.user.id}> ${anormalChatMessage}`).then((msg) => {
+    godtierDelete = msg
+    preverif.awaitMessages({ filter, max: 1, time: 60_000, errors: ['time'] })
+      .then(message => {
+        message = message.first()
+        let verifrole = message.guild.roles.cache.find(r => r.id === "1009444432598270003");
+        if (message.author.id == member.user.id) {
+          if (message.content.length >= 3) {
+            if (message.content == takenSozcuk) {
+              member.roles.add(verifrole);
+              godtierDelete.delete().catch((err) => {
+                console.log(err)
+              })
+              message.delete().catch(console.error);
+            } else {
+              message.reply("wrong")
+            }
+          } else {
+            message.reply("nah can't be")
+          }
+        }
+      })
+      .catch(collected => {
+        preverif.send('Timeout');
+      });
+  })
+
+
   if (!kanal) return;
 
   let aylar = {
-    "01": "Ocak",
-    "02": "Şubat",
-    "03": "Mart",
-    "04": "Nisan",
-    "05": "Mayıs",
-    "06": "Haziran",
-    "07": "Temmuz",
-    "08": "Ağustos",
-    "09": "Eylül",
-    "10": "Ekim",
-    "11": "Kasım",
-    "12": "Aralık"
+    "01": "January",
+    "02": "February",
+    "03": "March",
+    "04": "April",
+    "05": "May",
+    "06": "June",
+    "07": "July",
+    "08": "August",
+    "09": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
   }
 
   let bitiş = member.user.createdAt
   let günü = moment(new Date(bitiş).toISOString()).format('DD')
-  let ayı = moment(new Date(bitiş).toISOString()).format('MM').replace("01", "Ocak").replace("02", "Şubat").replace("03", "Mart").replace("04", "Nisan").replace("05", "Mayıs").replace("06", "Haziran").replace("07", "Temmuz").replace("08", "Ağustos").replace("09", "Eylül").replace("10", "Ekim").replace("11", "Kasım").replace("12", "Aralık").replace("13", "CodAre") //codare
+  let ayı = moment(new Date(bitiş).toISOString()).format('MM').replace("01", "January").replace("02", "February").replace("03", "March").replace("04", "April").replace("05", "May").replace("06", "June").replace("07", "July").replace("08", "August").replace("09", "September").replace("10", "October").replace("11", "November").replace("12", "December")
   let yılı = moment(new Date(bitiş).toISOString()).format('YYYY')
   let saati = moment(new Date(bitiş).toISOString()).format('HH:mm')
 
@@ -156,16 +193,27 @@ client.on('guildMemberAdd', async (member) => {
 
   let netyıl = yıl2 - yıl
 
-  let created = ` ${netyıl} yıl  ${ay} ay ${hafta} hafta ${gün} gün önce`
+  let created = ` ${netyıl} years  ${ay} months ${hafta} weeks ${gün} day ago`
+  var myDate = new Date(süre);
+  var result = myDate.getTime();
 
   let kontrol;
-  if (süre < 1296000000) kontrol = 'Bu hesap şüpheli!'
-  if (süre > 1296000000) kontrol = 'Bu hesap güvenli!'
+  let renk;
+  let suankizaman = Date.now() - 1296000000
+
+  if (result > suankizaman) {
+    renk = 'RED'
+    kontrol = 'This account is suspecious!'
+  } else {
+    renk = 'GREEN'
+    kontrol = 'This account is trusted.'
+  }
 
   let gelenlog = new MessageEmbed()
-    .setColor('GREEN')
-    .setTitle(`${member.user.username} Katıldı`)
-    .setDescription('<@' + member.id + '> Bilgileri : \n\n  Hesap oluşturulma tarihi **[' + created + ']** (`' + günay + '`) \n\n Hesap durumu : **' + kontrol + '**')
+    .setColor(renk)
+    .setTitle(`${member.user.username} Joined`)
+    .setDescription('<@' + member.id + '> Info : \n\n  Create Date **[' + created + ']** (`' + günay + '`) \n\n Account Status : **' + kontrol + '**')
+    .setImage(member.user.displayAvatarURL())
     .setTimestamp()
   kanal.send({
     embeds: [gelenlog]
@@ -356,43 +404,44 @@ client.on('messageCreate', message => {
     }
   }
 
-
-  var levelControl = client.level.hasOwnProperty(message.author.id)
-  var count
-  var level
-  if (levelControl) {
-    count = client.level[message.author.id].count
-    level = client.level[message.author.id].level
-    client.level[message.author.id].count = count + 1
-    fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
-      if (err) throw err;
-    });
-
-  } else {
-    count = 0
-    level = 0
-    client.level[message.author.id] = {
-      userid: message.author.id,
-      guild: message.guild.id,
-      count: count + 1,
-      level: level,
-    }
-    fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
-      if (err) throw err;
-    });
-  }
-
-
-  var levelCount = client.settings["levels"]
-  if (level == levelCount[level].level) {
-    console.log(message.author.username, level, count)
-    if (count >= levelCount[level].count) {
-      message.channel.send(`<@${message.author.id}> cheers! u got a level: ${level + 1}`)
-      client.level[message.author.id].level = level + 1
-      client.level[message.author.id].count = 0
+  if (!message.channel.id == 1011995304280731719) {
+    var levelControl = client.level.hasOwnProperty(message.author.id)
+    var count
+    var level
+    if (levelControl) {
+      count = client.level[message.author.id].count
+      level = client.level[message.author.id].level
+      client.level[message.author.id].count = count + 1
       fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
         if (err) throw err;
       });
+
+    } else {
+      count = 0
+      level = 0
+      client.level[message.author.id] = {
+        userid: message.author.id,
+        guild: message.guild.id,
+        count: count + 1,
+        level: level,
+      }
+      fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
+        if (err) throw err;
+      });
+    }
+
+
+    var levelCount = client.settings["levels"]
+    if (level == levelCount[level].level) {
+      console.log(message.author.username, level, count)
+      if (count >= levelCount[level].count) {
+        message.channel.send(`<@${message.author.id}> cheers! u got a level: ${level + 1}`)
+        client.level[message.author.id].level = level + 1
+        client.level[message.author.id].count = 0
+        fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
+          if (err) throw err;
+        });
+      }
     }
   }
 
