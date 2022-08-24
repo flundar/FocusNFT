@@ -159,7 +159,6 @@ client.on('guildMemberAdd', async (member) => {
     renk = 'RED'
     kontrol = 'This account is suspecious!'
     info = 'No information user going to be kicked from server.'
-    member.kick();
   } else {
     renk = 'GREEN'
     kontrol = 'This account is trusted.'
@@ -175,7 +174,7 @@ client.on('guildMemberAdd', async (member) => {
  await kanal.send({
     embeds: [gelenlog]
   });
-
+  if(result > suankizaman) return  member.kick();
   let sozcukler = ["apple", "red", "car", "raccoon", "headphone", "computer", "cooler", "sun", "moon", "light", "jupiter", "phone", "nft", "goat", "monitor", "orange", "blue", "green", "darkblue"]
   var takenSozcuk = sozcukler[Math.floor(Math.random() * sozcukler.length)];
   let normalChatMessage = [`You need to write "${takenSozcuk}" to unlock verify.`, `Write "${takenSozcuk}" to gain verify access.`, `"${takenSozcuk}" Write the first sentence for take access to verify.`]
@@ -219,6 +218,7 @@ client.on('guildMemberAdd', async (member) => {
       })
       .catch(collected => {
         member.kick();
+        godtierDelete.delete()
       });
   })
 })
