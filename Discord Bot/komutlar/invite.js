@@ -1,4 +1,11 @@
 const fs = require("fs")
+const Discord = require('discord.js');
+const {
+	Client,
+	Collection,
+	Intents,
+	MessageEmbed
+} = Discord;
 exports.run = (client, message, args) => {
   let user = message.mentions.members.first()
   var guild = message.guild
@@ -12,17 +19,34 @@ exports.run = (client, message, args) => {
         if (user) {
           if (!message.member.roles.cache.find(r => r.id === "1009074068768690207")) return message.channel.send("u don't have a permission for that.");
           if(user.id == inviter.id){
-            message.channel.send(`<@${inviter.id}> \nHas invited: ${count} Om \ndiscord.gg/${code}`)
-            console.log("founded")
+            const embed = new MessageEmbed()
+            .setColor('GREEN')
+            .setThumbnail(message.author.AvatarURL)
+            .setDescription(`<@${inviter.id}> \nHas invited: ${count} Om \ndiscord.gg/${code}`)
+            .setTimestamp()
+          message.channel.send({
+            embeds: [embed]
+          })
           }
         } else {
           if(message.author.id == inviter.id){
-            message.channel.send(`<@${inviter.id}> \nHas invited: ${count} Om \ndiscord.gg/${code}`)
-            console.log("founded")
+            const embed = new MessageEmbed()
+            .setThumbnail(message.author.AvatarURL)
+            .setDescription(`<@${inviter.id}> \nHas invited: ${count} Om \ndiscord.gg/${code}`)
+            .setTimestamp()
+          message.channel.send({
+            embeds: [embed]
+          })
           }
         }
       } else {
-
+        const embed = new MessageEmbed()
+        .setThumbnail(message.author.AvatarURL)
+        .setDescription(`Couldn't found invite!`)
+        .setTimestamp()
+      message.channel.send({
+        embeds: [embed]
+      })
       }
     
 

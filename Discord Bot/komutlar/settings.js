@@ -1,4 +1,11 @@
 const fs = require("fs")
+const Discord = require('discord.js');
+const {
+	Client,
+	Collection,
+	Intents,
+	MessageEmbed
+} = Discord;
 exports.run = (client, message, args) => {
   let parameter = args[0] //args.slice(0).join(' ');
 

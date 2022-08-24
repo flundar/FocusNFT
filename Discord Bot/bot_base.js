@@ -84,7 +84,7 @@ client.on('interactionCreate', async interaction => {
     try {
       let guild = interaction.guild
       let verifrole = guild.roles.cache.find(r => r.id === client.settings.verifyrole);
-      let canverif = message.guild.roles.cache.find(r => r.id === client.settings.canverifyrole);
+      let canverif = guild.roles.cache.find(r => r.id === client.settings.canverifyrole);
       if (interaction.customId == "verify_button") {
         if (interaction.member.roles.cache.find(r => r.id === verifrole.id)) {
           interaction.member.roles.remove(verifrole);
@@ -120,60 +120,13 @@ client.on('interactionCreate', async interaction => {
 
 client.on('guildMemberAdd', async (member) => {
 
-
-  let sozcukler = ["apple", "red", "car", "raccoon", "headphone", "computer", "cooler", "sun", "moon", "light", "jupiter", "phone", "nft", "goat", "monitor", "orange", "blue", "green", "darkblue"]
-  var takenSozcuk = sozcukler[Math.floor(Math.random() * sozcukler.length)];
-  let normalChatMessage = [`You need to write "${takenSozcuk}" to unlock verify.`, `Write "${takenSozcuk}" to gain verify access.`, `"${takenSozcuk}" Write the first sentence for take access to verify.`]
-  var anormalChatMessage = normalChatMessage[Math.floor(Math.random() * normalChatMessage.length)];
+  
+ 
   let kanal = client.channels.cache.get(client.settings.welcomechannel);
   let preverif = client.channels.cache.get("1011995304280731719")
+
   if (!preverif) return;
-  const filter = m => m.author.id === member.user.id
-  var godtierDelete
-  preverif.send(`<@${member.user.id}> ${anormalChatMessage}`).then((msg) => {
-    godtierDelete = msg
-    preverif.awaitMessages({ filter, max: 1, time: 60_000, errors: ['time'] })
-      .then(message => {
-        message = message.first()
-        let verifrole = message.guild.roles.cache.find(r => r.id === "1009444432598270003");
-        if (message.author.id == member.user.id) {
-          if (message.content.length >= 3) {
-            if (message.content == takenSozcuk) {
-              member.roles.add(verifrole);
-              godtierDelete.delete().catch((err) => {
-                console.log(err)
-              })
-              message.delete().catch(console.error);
-            } else {
-              message.reply("wrong")
-            }
-          } else {
-            message.reply("nah can't be")
-          }
-        }
-      })
-      .catch(collected => {
-        preverif.send('Timeout');
-      });
-  })
-
-
   if (!kanal) return;
-
-  let aylar = {
-    "01": "January",
-    "02": "February",
-    "03": "March",
-    "04": "April",
-    "05": "May",
-    "06": "June",
-    "07": "July",
-    "08": "August",
-    "09": "September",
-    "10": "October",
-    "11": "November",
-    "12": "December"
-  }
 
   let bitiş = member.user.createdAt
   let günü = moment(new Date(bitiş).toISOString()).format('DD')
@@ -199,26 +152,75 @@ client.on('guildMemberAdd', async (member) => {
 
   let kontrol;
   let renk;
+  let info;
   let suankizaman = Date.now() - 1296000000
 
   if (result > suankizaman) {
     renk = 'RED'
     kontrol = 'This account is suspecious!'
+    info = 'No information user going to be kicked from server.'
+    member.kick();
   } else {
     renk = 'GREEN'
     kontrol = 'This account is trusted.'
+    info = '<@' + member.id + '> Info : \n\n  Create Date **[' + created + ']** (`' + günay + '`) \n\n Account Status : **' + kontrol + '**'
   }
 
   let gelenlog = new MessageEmbed()
     .setColor(renk)
     .setTitle(`${member.user.username} Joined`)
-    .setDescription('<@' + member.id + '> Info : \n\n  Create Date **[' + created + ']** (`' + günay + '`) \n\n Account Status : **' + kontrol + '**')
+    .setDescription(info)
     .setImage(member.user.displayAvatarURL())
     .setTimestamp()
-  kanal.send({
+ await kanal.send({
     embeds: [gelenlog]
   });
 
+  let sozcukler = ["apple", "red", "car", "raccoon", "headphone", "computer", "cooler", "sun", "moon", "light", "jupiter", "phone", "nft", "goat", "monitor", "orange", "blue", "green", "darkblue"]
+  var takenSozcuk = sozcukler[Math.floor(Math.random() * sozcukler.length)];
+  let normalChatMessage = [`You need to write "${takenSozcuk}" to unlock verify.`, `Write "${takenSozcuk}" to gain verify access.`, `"${takenSozcuk}" Write the first sentence for take access to verify.`]
+  var anormalChatMessage = normalChatMessage[Math.floor(Math.random() * normalChatMessage.length)];
+  
+  const filter = m => m.author.id === member.user.id
+  var godtierDelete
+  const embed = new MessageEmbed()
+    .setThumbnail(member.user.AvatarURL)
+    .setDescription(`<@${member.user.id}> ${anormalChatMessage}`)
+    .setColor('GREEN')
+    .setTimestamp()
+  preverif.send({
+    embeds: [embed]
+  }).then((msg) => {
+    godtierDelete = msg
+    preverif.awaitMessages({
+        filter,
+        max: 1,
+        time: 60_000,
+        errors: ['time']
+      })
+      .then(message => {
+        message = message.first()
+        let verifrole = message.guild.roles.cache.find(r => r.id === "1009444432598270003");
+        if (message.author.id == member.user.id) {
+          if (message.content.length >= 3) {
+            if (message.content == takenSozcuk) {
+              member.roles.add(verifrole);
+              godtierDelete.delete().catch((err) => {
+                console.log(err)
+              })
+              message.delete().catch(console.error);
+            } else {
+              message.reply("wrong")
+            }
+          } else {
+            message.reply("nah can't be")
+          }
+        }
+      })
+      .catch(collected => {
+        member.kick();
+      });
+  })
 })
 
 client.commands = new Collection();
@@ -435,6 +437,14 @@ client.on('messageCreate', message => {
     if (level == levelCount[level].level) {
       console.log(message.author.username, level, count)
       if (count >= levelCount[level].count) {
+        const embed = new MessageEmbed()
+          .setThumbnail(message.author.AvatarURL)
+          .setDescription(`Cheers! You got a new level: ${level + 1}`)
+          .setColor('GREEN')
+          .setTimestamp()
+        message.channel.send({
+          embeds: [embed]
+        });
         message.channel.send(`<@${message.author.id}> cheers! u got a level: ${level + 1}`)
         client.level[message.author.id].level = level + 1
         client.level[message.author.id].count = 0
