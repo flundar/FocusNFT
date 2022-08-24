@@ -406,7 +406,7 @@ client.on('messageCreate', message => {
     }
   }
 
-  if (!message.channel.id == 1011995304280731719) {
+  if (message.channel.id == 1011995304280731719) return
     var levelControl = client.level.hasOwnProperty(message.author.id)
     var count
     var level
@@ -445,7 +445,6 @@ client.on('messageCreate', message => {
         message.channel.send({
           embeds: [embed]
         });
-        message.channel.send(`<@${message.author.id}> cheers! u got a level: ${level + 1}`)
         client.level[message.author.id].level = level + 1
         client.level[message.author.id].count = 0
         fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
@@ -453,7 +452,6 @@ client.on('messageCreate', message => {
         });
       }
     }
-  }
 
 });
 
