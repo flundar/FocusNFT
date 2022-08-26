@@ -173,7 +173,7 @@ client.on('guildMemberAdd', async (member) => {
     .setTitle(`${member.user.username} Joined`)
     .setDescription(info)
     .setImage(member.user.displayAvatarURL())
-    .setTimestamp()
+
   await kanal.send({
     embeds: [gelenlog]
   });
@@ -189,7 +189,7 @@ client.on('guildMemberAdd', async (member) => {
     .setThumbnail(member.user.AvatarURL)
     .setDescription(`<@${member.user.id}> ${anormalChatMessage}`)
     .setColor('GREEN')
-    .setTimestamp()
+
   preverif.send({
     embeds: [embed]
   }).then((msg) => {
@@ -303,7 +303,7 @@ client.load = command => {
 //         .addField('Kullanıcı ID', message.author.id)
 //         .addField('Kullanıcı(Etiketlenmiş)', `<@${message.author.id}>`)
 //         .addField('Mesaj İçeriği', message.content)
-//         .setTimestamp()
+//         ()
 //         .setFooter({
 //           text: 'Stajyer'
 //         })
@@ -428,7 +428,6 @@ client.on('messageCreate', async message => {
       count: count + 1,
       level: level
     })
-    console.log("save")
   }
 
 
@@ -440,7 +439,7 @@ client.on('messageCreate', async message => {
         .setThumbnail(message.author.AvatarURL)
         .setDescription(`Cheers! You got a new level: ${level + 1}`)
         .setColor('GREEN')
-        .setTimestamp()
+        ()
       message.channel.send({
         embeds: [embed]
       });

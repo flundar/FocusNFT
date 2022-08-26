@@ -10,19 +10,24 @@ const {
   QuickDB
 } = require('quick.db-9.0.0');
 const db = new QuickDB();
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
   var level
   var parameter = args[0]
   let user = message.mentions.members.first()
+  var newmessage = "\n"
   if (parameter) {
     if (parameter == "list") {
-      var data = client.level
-     
-      for (const i in data) {
-        console.log(data[i].level)
+      var data = await db.get(`levels`)
+      for (const i in sortData("level", data, 'desc')) {
+        newmessage += await `NAME: <@${data[i].userid}> LEVEL: ${data[i].level}\n`
       }
-
-
+      const embed = new MessageEmbed()
+        .setThumbnail(message.author.AvatarURL)
+        .setDescription(`${newmessage}`)
+        .setColor('GREEN')
+      message.channel.send({
+        embeds: [embed]
+      });
     }
   } else {
     if (!user) {
@@ -36,7 +41,7 @@ exports.run = (client, message, args) => {
         .setColor('GREEN')
         .setThumbnail(message.author.AvatarURL)
         .setDescription(`<@${message.author.id}> your level is : ${level}`)
-        .setTimestamp()
+        ()
       message.channel.send({
         embeds: [embed]
       })
@@ -52,11 +57,27 @@ exports.run = (client, message, args) => {
         .setThumbnail(message.author.AvatarURL)
         .setColor('GREEN')
         .setDescription(`<@${message.author.id}>'s level is : ${level}`)
-        .setTimestamp()
+        ()
       message.channel.send({
         embeds: [embed]
       })
     }
+  }
+
+  function sortData(key, data, type) {
+    let ordered = {};
+    let compareFunction = function (a, b) {
+      return data[b][key] - data[a][key];
+    };
+    if (type === "asc") {
+      compareFunction = function (a, b) {
+        return data[a][key] - data[b][key];
+      }
+    }
+    Object.keys(data).sort(compareFunction).forEach(function (key) {
+      ordered[key] = data[key];
+    });
+    return ordered;
   }
 
 };
