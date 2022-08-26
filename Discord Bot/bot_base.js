@@ -6,8 +6,11 @@ const {
   Intents,
   MessageEmbed
 } = Discord;
-// Create a new client instance
 
+const {
+  QuickDB
+} = require('quick.db-9.0.0');
+const db = new QuickDB();
 const client = new Client({
   partials: [
     "CHANNEL"
@@ -120,8 +123,8 @@ client.on('interactionCreate', async interaction => {
 
 client.on('guildMemberAdd', async (member) => {
 
-  
- 
+
+
   let kanal = client.channels.cache.get(client.settings.welcomechannel);
   let preverif = client.channels.cache.get("1011995304280731719")
 
@@ -171,15 +174,15 @@ client.on('guildMemberAdd', async (member) => {
     .setDescription(info)
     .setImage(member.user.displayAvatarURL())
     .setTimestamp()
- await kanal.send({
+  await kanal.send({
     embeds: [gelenlog]
   });
-  if(result > suankizaman) return  member.kick();
+  if (result > suankizaman) return member.kick();
   let sozcukler = ["apple", "red", "car", "raccoon", "headphone", "computer", "cooler", "sun", "moon", "light", "jupiter", "phone", "nft", "goat", "monitor", "orange", "blue", "green", "darkblue"]
   var takenSozcuk = sozcukler[Math.floor(Math.random() * sozcukler.length)];
   let normalChatMessage = [`You need to write "${takenSozcuk}" to unlock verify.`, `Write "${takenSozcuk}" to gain verify access.`, `"${takenSozcuk}" Write the first sentence for take access to verify.`]
   var anormalChatMessage = normalChatMessage[Math.floor(Math.random() * normalChatMessage.length)];
-  
+
   const filter = m => m.author.id === member.user.id
   var godtierDelete
   const embed = new MessageEmbed()
@@ -378,7 +381,7 @@ client.on("messageReactionRemove", function (messageReaction, user) {
 
 
 // KONTROL
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
   if (message.author.bot) {
     return;
 
@@ -407,51 +410,44 @@ client.on('messageCreate', message => {
   }
 
   if (message.channel.id == 1011995304280731719) return
-    var levelControl = client.level.hasOwnProperty(message.author.id)
-    var count
-    var level
-    if (levelControl) {
-      count = client.level[message.author.id].count
-      level = client.level[message.author.id].level
-      client.level[message.author.id].count = count + 1
-      fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
-        if (err) throw err;
+
+
+  var levelControl = await db.has(`levels.${message.author.id}`)
+  var data
+  var level = await db.get(`levels.${message.author.id}.level`)
+  var count = await db.get(`levels.${message.author.id}.count`)
+
+  if (levelControl) {
+    await db.add(`levels.${message.author.id}.count`, 1);
+  } else {
+    count = 0
+    level = 0
+    await db.set(`levels.${message.author.id}`, {
+      userid: message.author.id,
+      guild: message.guild.id,
+      count: count + 1,
+      level: level
+    })
+    console.log("save")
+  }
+
+
+  var levelCount = client.settings["levels"]
+  if (level == levelCount[level].level) {
+    console.log(message.author.username, level, count)
+    if (count >= levelCount[level].count) {
+      const embed = new MessageEmbed()
+        .setThumbnail(message.author.AvatarURL)
+        .setDescription(`Cheers! You got a new level: ${level + 1}`)
+        .setColor('GREEN')
+        .setTimestamp()
+      message.channel.send({
+        embeds: [embed]
       });
-
-    } else {
-      count = 0
-      level = 0
-      client.level[message.author.id] = {
-        userid: message.author.id,
-        guild: message.guild.id,
-        count: count + 1,
-        level: level,
-      }
-      fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
-        if (err) throw err;
-      });
+      await db.add(`levels.${message.author.id}.level`, 1)
+      await db.set(`levels.${message.author.id}.count`, 0)
     }
-
-
-    var levelCount = client.settings["levels"]
-    if (level == levelCount[level].level) {
-      console.log(message.author.username, level, count)
-      if (count >= levelCount[level].count) {
-        const embed = new MessageEmbed()
-          .setThumbnail(message.author.AvatarURL)
-          .setDescription(`Cheers! You got a new level: ${level + 1}`)
-          .setColor('GREEN')
-          .setTimestamp()
-        message.channel.send({
-          embeds: [embed]
-        });
-        client.level[message.author.id].level = level + 1
-        client.level[message.author.id].count = 0
-        fs.writeFile("./level.json", JSON.stringify(client.level, null, 4), async err => {
-          if (err) throw err;
-        });
-      }
-    }
+  }
 
 });
 
