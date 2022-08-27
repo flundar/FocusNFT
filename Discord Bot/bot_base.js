@@ -47,7 +47,6 @@ const {
   json
 } = require('body-parser');
 client.settings = require('./settings.json');
-client.level = require('./level.json');
 // REQUIRE
 
 
@@ -72,15 +71,21 @@ client.on('rateLimit', (info) => {
 })
 
 
-client.on("ready", () => {
-  setInterval(() => {
+client.on("ready", async () => {
+  setInterval(async() => {
     client.user.setActivity(client.settings.status, {
-      type: "STREAMING",
-      url: "https://www.twitch.tv/flundarr"
+      type: "WATCHING",
     });
-  }, 2000);
-});
+  }, 5000);
 
+  setInterval(async() => {
+    let guild = await client.guilds.cache.get(client.settings.guides)
+    let whitelistMemberCount = guild.roles.cache.find(r => r.id === client.settings.whitelistrole).members.size
+    let guildMemberCount = guild.memberCount
+    guild.channels.cache.find(r => r.id === client.settings.whitelistCounter).setName(`Whitelist: ${whitelistMemberCount}`).catch((err => {console.log(err)}));
+    guild.channels.cache.find(r => r.id === client.settings.guildMemberCounter).setName(`Members: ${guildMemberCount}`).catch((err => {console.log(err)}));
+  }, 30000);
+});
 
 client.on('interactionCreate', async interaction => {
   if (interaction.isButton()) {
@@ -191,7 +196,7 @@ client.on('guildMemberAdd', async (member) => {
     .setColor('GREEN')
 
   preverif.send({
-    embeds: [embed]
+    content:`<@${member.user.id}>` ,embeds: [embed]
   }).then((msg) => {
     godtierDelete = msg
     preverif.awaitMessages({
