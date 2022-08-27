@@ -41,7 +41,7 @@ exports.run = async (client, message, args) => {
         .setColor('GREEN')
         .setThumbnail(message.author.AvatarURL)
         .setDescription(`<@${message.author.id}> your level is : ${level}`)
-        ()
+
       message.channel.send({
         embeds: [embed]
       })
@@ -57,7 +57,7 @@ exports.run = async (client, message, args) => {
         .setThumbnail(message.author.AvatarURL)
         .setColor('GREEN')
         .setDescription(`<@${message.author.id}>'s level is : ${level}`)
-        ()
+
       message.channel.send({
         embeds: [embed]
       })

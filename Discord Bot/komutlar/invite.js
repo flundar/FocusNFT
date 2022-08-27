@@ -23,7 +23,7 @@ exports.run = (client, message, args) => {
         .setColor('GREEN')
         .setThumbnail(message.author.AvatarURL)
         .setDescription(mesaj)
-        ()
+
       message.channel.send({
         embeds: [embed]
       })
@@ -44,7 +44,7 @@ exports.run = (client, message, args) => {
                 .setColor('GREEN')
                 .setThumbnail(message.author.AvatarURL)
                 .setDescription(`<@${inviter.id}> \nHas invited: ${count} Om \ndiscord.gg/${code}`)
-                ()
+
               message.channel.send({
                 embeds: [embed]
               })
@@ -54,7 +54,7 @@ exports.run = (client, message, args) => {
               const embed = new MessageEmbed()
                 .setThumbnail(message.author.AvatarURL)
                 .setDescription(`<@${inviter.id}> \nHas invited: ${count} Om \ndiscord.gg/${code}`)
-                ()
+
               message.channel.send({
                 embeds: [embed]
               })
@@ -64,7 +64,7 @@ exports.run = (client, message, args) => {
           const embed = new MessageEmbed()
             .setThumbnail(message.author.AvatarURL)
             .setDescription(`Couldn't found invite!`)
-            ()
+
           message.channel.send({
             embeds: [embed]
           })
