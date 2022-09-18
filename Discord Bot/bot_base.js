@@ -81,8 +81,10 @@ client.on("ready", async () => {
   setInterval(async() => {
     let guild = await client.guilds.cache.get(client.settings.guides)
     let whitelistMemberCount = guild.roles.cache.find(r => r.id === client.settings.whitelistrole).members.size
+    let ogMemberCount = guild.roles.cache.find(r => r.id === client.settings.ogRole).members.size
     let guildMemberCount = guild.memberCount
     guild.channels.cache.find(r => r.id === client.settings.whitelistCounter).setName(`Whitelist: ${whitelistMemberCount}`).catch((err => {console.log(err)}));
+    guild.channels.cache.find(r => r.id === client.settings.ogCounter).setName(`OG: ${ogMemberCount}`).catch((err => {console.log(err)}));
     guild.channels.cache.find(r => r.id === client.settings.guildMemberCounter).setName(`Members: ${guildMemberCount}`).catch((err => {console.log(err)}));
   }, 30000);
 });
