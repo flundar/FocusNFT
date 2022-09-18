@@ -166,7 +166,7 @@ client.on('guildMemberAdd', async (member) => {
   if (result > suankizaman) {
     renk = 'RED'
     kontrol = 'This account is suspecious!'
-    info = 'No information user going to be kicked from server.'
+    info = 'No information, user going to be kicked from the server.'
   } else {
     renk = 'GREEN'
     kontrol = 'This account is trusted.'
