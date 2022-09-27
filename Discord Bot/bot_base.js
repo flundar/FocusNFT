@@ -212,7 +212,7 @@ client.on('guildMemberAdd', async (member) => {
         let verifrole = message.guild.roles.cache.find(r => r.id === "1009444432598270003");
         if (message.author.id == member.user.id) {
           if (message.content.length >= 3) {
-            if (message.content == takenSozcuk) {
+            if (message.content.toLowerCase() == takenSozcuk.toLowerCase()) {
               member.roles.add(verifrole);
               godtierDelete.delete().catch((err) => {
                 console.log(err)
