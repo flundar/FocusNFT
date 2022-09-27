@@ -444,7 +444,7 @@ client.on('messageCreate', async message => {
     if (count >= levelCount[level].count) {
       const embed = new MessageEmbed()
         .setThumbnail(message.author.AvatarURL)
-        .setDescription(`Cheers! You got a new level: ${level + 1}`)
+        .setDescription(`Cheers <@${message.author.id}> ! You got a new level: ${level + 1}`)
         .setColor('GREEN')
       message.channel.send({
         embeds: [embed]
